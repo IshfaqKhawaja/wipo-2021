@@ -7,5 +7,5 @@ app = FastAPI()
 @app.get('/fetch/{id}')
 async def index(id):
     print(id)
-    file = await main(id)
+    file = main(id)
     return FileResponse(file)
