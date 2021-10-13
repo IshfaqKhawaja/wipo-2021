@@ -126,10 +126,10 @@ def send_mail(pdf):
         print(e)
 
 
-async def main(num):
+def main(num):
     irnis = num
     try:
-        await driver.get("https://www3.wipo.int/madrid/monitor/en/")
+        driver.get("https://www3.wipo.int/madrid/monitor/en/")
         driver.find_element_by_id("AUTO_input").send_keys(irnis)
         driver.find_element_by_id(
             "AUTO_input").send_keys(Keys.ENTER)
