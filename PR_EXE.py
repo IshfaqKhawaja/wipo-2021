@@ -3,7 +3,8 @@ import traceback
 from csv import writer
 import sys
 from selenium.webdriver.support.ui import Select
-import os, subprocess
+import os
+import subprocess
 import csv
 from selenium.webdriver.common.keys import Keys
 import time
@@ -24,22 +25,31 @@ import os
 import io
 from webdriver_manager.chrome import ChromeDriverManager
 from selenium.webdriver.chrome.options import Options
-options = Options()
-options.headless = True
-driver = webdriver.Chrome(ChromeDriverManager().install(), options = options)
+chrome_options = webdriver.ChromeOptions()
+chrome_options.binary_location = os.environ.get("GOOGLE_CHROME_BIN")
+chrome_options.add_argument("--headless")
+chrome_options.add_argument("--disable-dev-shm-usage")
+chrome_options.add_argument("--no-sandbox")
+driver = webdriver.Chrome(executable_path=os.environ.get(
+    "CHROMEDRIVER_PATH"), options=chrome_options)
+
+# options = Options()
+# options.headless = True
+#driver = webdriver.Chrome(ChromeDriverManager().install(), options=options)
 #driver = webdriver.Chrome()
 notificationDat = "NA"
 address = "NA"
 Status = "NA"
 currencies = []
-removelist=[]
+removelist = []
 thisval = ""
+
 
 def writingfunction(currencies):
     #print("in writing function")
     print("Remaining list .....")
     for i in currencies:
-       print(i)
+        print(i)
     with open('Input.csv', 'w', newline='') as csvfile:
         fieldnames = ['IRN']
         writer = csv.DictWriter(csvfile, fieldnames=fieldnames)
@@ -49,8 +59,11 @@ def writingfunction(currencies):
             writer.writerow(
                 {'IRN': thisval})
 
+
 def Get_text_from_image(pdf_path):
-    import pytesseract, io, gc
+    import pytesseract
+    import io
+    import gc
     from PIL import Image
     from wand.image import Image as wi
     import gc
@@ -59,34 +72,34 @@ def Get_text_from_image(pdf_path):
     print("   Processing on pdf document   ")
     #pdf_path = "D:\pythonPCT\1496314_pdf.pdf"
     #print("file path is => "+ pdf_path)
-    pdf= wi(filename=pdf_path,resolution=300)
-    pdfImg=pdf.convert('jpeg')
-    imgBlobs=[]
-    extracted_text=[]
+    pdf = wi(filename=pdf_path, resolution=300)
+    pdfImg = pdf.convert('jpeg')
+    imgBlobs = []
+    extracted_text = []
     try:
         for img in pdfImg.sequence:
-            page=wi(image=img)
+            page = wi(image=img)
             imgBlobs.append(page.make_blob('jpeg'))
-            for i in range(0,5):
-                [gc.collect() for i in range(0,10)]
+            for i in range(0, 5):
+                [gc.collect() for i in range(0, 10)]
         for imgBlob in imgBlobs:
             im = Image.open(io.BytesIO(imgBlob))
-            text = pytesseract.image_to_string(im,lang='eng')
+            text = pytesseract.image_to_string(im, lang='eng')
             text = text.replace(r"\n", " ")
             extracted_text.append(text)
 
-            for i in range(0,5):
-                [gc.collect() for i in range(0,10)]
-        return (''.join([i.replace("\n"," ").replace("\n\n"," ") for i in extracted_text]))
-        [gc.collect() for i in range(0,10)]
+            for i in range(0, 5):
+                [gc.collect() for i in range(0, 10)]
+        return (''.join([i.replace("\n", " ").replace("\n\n", " ") for i in extracted_text]))
+        [gc.collect() for i in range(0, 10)]
     finally:
-        [gc.collect() for i in range(0,10)]
+        [gc.collect() for i in range(0, 10)]
         img.destroy()
 
 
 def main():
-    #with open('Output.csv', 'w', newline='') as csvfile:
-    with open('Output.csv', 'a',newline='') as f_object:
+    # with open('Output.csv', 'w', newline='') as csvfile:
+    with open('Output.csv', 'a', newline='') as f_object:
         #fieldnames = ['IRN', 'Name & Address', 'Notification Date',"Status",'Link']
         # writer = csv.DictWriter(csvfile, fieldnames=fieldnames)
         # writer.writeheader()
@@ -102,16 +115,18 @@ def main():
                 irnis = row['IRN']
                 # print(irnis)
                 currencies.append(irnis)
-                last_element = currencies[-1]    # last value for process end msg
+                # last value for process end msg
+                last_element = currencies[-1]
             for f in currencies:
                 print("     Extracting data for")
                 print(f)
-                irnis=f
+                irnis = f
                 try:
                     driver.get("https://www3.wipo.int/madrid/monitor/en/")
                     # driver.findElement(By.id("AUTO_input")).sendKeys("Mumbai")
                     driver.find_element_by_id("AUTO_input").send_keys(irnis)
-                    driver.find_element_by_id("AUTO_input").send_keys(Keys.ENTER)
+                    driver.find_element_by_id(
+                        "AUTO_input").send_keys(Keys.ENTER)
                     time.sleep(5)
                 except:
                     print("    Page loading Error....")
@@ -140,7 +155,7 @@ def main():
                                 #print("Name and address of the representative")
                                 address = (textis.text)
                                 address = address.strip()
-                                #print(address)
+                                # print(address)
                         except Exception as e:
                             pass
                     indian = soup.find_all("div", {"class": "text"})
@@ -166,14 +181,14 @@ def main():
                                 if ("." in p.text):
                                     notificationDate = p.text
                                     #print("Notification Date is")
-                                    #print(notificationDate)
+                                    # print(notificationDate)
                                     datecheck = 0
                     response = requests.get(href)
                     # Parse text obtained
                     soup = BeautifulSoup(response.text, 'html.parser')
                     response = requests.get(link)
                     #print("this is pdf downloading link")
-                    #print(link)
+                    # print(link)
                     pdf = open(str(irnis) + ".pdf", 'wb')
                     #print("pdf path is found......")
                     pdf_path = (os.getcwd() + "/" + str(irnis) + ".pdf")
@@ -182,12 +197,13 @@ def main():
                     pdf.close()
                     irnis = irnis.encode('ascii', 'ignore').decode('ascii')
                     address = address.encode('ascii', 'ignore').decode('ascii')
-                    notificationDate = notificationDate.encode('ascii', 'ignore').decode('ascii')
+                    notificationDate = notificationDate.encode(
+                        'ascii', 'ignore').decode('ascii')
                     # reading pdf data from here
                     thispdf = Get_text_from_image(pdf_path)
                     thispdf = str(thispdf)
                     #print("this is pdf data")
-                    #print(thispdf)
+                    # print(thispdf)
                     word = "The Grounds are mentioned as per the Notice(es) of Opposition attached herewith"
                     second_word = "of filling TM-M"
                     second_word2 = "of filing TM-M"
@@ -196,31 +212,31 @@ def main():
                     if thispdf.find(word) != -1:
                         Status = "Opposition"
                         #print("this is first part of string")
-                        #print(Status)
+                        # print(Status)
                     elif thispdf.find(second_word) != -1:
                         Status = "Opposition"
                         #print("this is second part of string")
-                        #print(Status)
+                        # print(Status)
                     elif thispdf.find(second_word2) != -1:
                         Status = "Opposition"
                         #print("this is third part of string")
-                        #print(Status)
+                        # print(Status)
                     else:
                         #print("this is for else condition")
                         Status = "Refusal"
-                        #print(Status)
+                        # print(Status)
                     # end of reading pdf data
                     List = [irnis, address, notificationDate, Status, link]
                     writer_object.writerow(List)
-                    #writer.writerow(
-                       #{'IRN': irnis, 'Name & Address': address, 'Notification Date': notificationDate, 'Status': Status,'Link':link})
+                    # writer.writerow(
+                    # {'IRN': irnis, 'Name & Address': address, 'Notification Date': notificationDate, 'Status': Status,'Link':link})
                     removelist.append(f)
                     if (f) == last_element:
                         print("!...Extraction Process completed...!")
                         print("!...Extraction Process completed...!")
 
                 except Exception:
-                    #traceback.print_exc() # for showing error in try condition
+                    # traceback.print_exc() # for showing error in try condition
                     #print(" Error function called....")
                     for c in removelist:
                         currencies.remove(c)
@@ -229,4 +245,4 @@ def main():
                     print(".......Close and Run Again..........")
                     break  # break here
 
-#main()
+# main()
