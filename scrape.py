@@ -240,7 +240,6 @@ async def main(num):
     #     writingfunction(currencies)
     #     print("    Page did not load properly     ")
     #     print(".......Close and Run Again..........")
-    driver.close()
 
 
 # if __name__ == '__main__':
