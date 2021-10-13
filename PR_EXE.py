@@ -1,10 +1,7 @@
 import csv
-import traceback
 from csv import writer
-import sys
 from selenium.webdriver.support.ui import Select
 import os
-import subprocess
 import csv
 from selenium.webdriver.common.keys import Keys
 import time
@@ -20,22 +17,21 @@ from selenium.webdriver.support.ui import Select
 import os
 import csv
 from selenium.webdriver.common.keys import Keys
-import re
 import os
-import io
 from webdriver_manager.chrome import ChromeDriverManager
 from selenium.webdriver.chrome.options import Options
 chrome_options = webdriver.ChromeOptions()
-chrome_options.binary_location = os.environ.get("GOOGLE_CHROME_BIN")
+# chrome_options.binary_location = os.environ.get("GOOGLE_CHROME_BIN")
 chrome_options.add_argument("--headless")
-chrome_options.add_argument("--disable-dev-shm-usage")
-chrome_options.add_argument("--no-sandbox")
-driver = webdriver.Chrome(executable_path=os.environ.get(
-    "CHROMEDRIVER_PATH"), options=chrome_options)
+# chrome_options.add_argument("--disable-dev-shm-usage")
+# chrome_options.add_argument("--no-sandbox")
+# driver = webdriver.Chrome(executable_path=os.environ.get(
+# "CHROMEDRIVER_PATH"), options=chrome_options)
 
 # options = Options()
 # options.headless = True
-#driver = webdriver.Chrome(ChromeDriverManager().install(), options=options)
+driver = webdriver.Chrome(
+    ChromeDriverManager().install(), options=chrome_options)
 #driver = webdriver.Chrome()
 notificationDat = "NA"
 address = "NA"

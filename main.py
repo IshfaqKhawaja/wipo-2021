@@ -1,10 +1,11 @@
 from fastapi import FastAPI
-from PR_EXE import main
+from fastapi.responses import FileResponse
+from scrape import main
 app = FastAPI()
 
 
 @app.get('/fetch/{id}')
-async def index():
+async def index(id):
     print(id)
-    await main(id)
-    return 'All Data Fetched'
+    file = await main(id)
+    return FileResponse(file)
