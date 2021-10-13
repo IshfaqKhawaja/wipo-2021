@@ -244,5 +244,6 @@ def main():
                     print("    Page did not load properly     ")
                     print(".......Close and Run Again..........")
                     break  # break here
+    driver.close()
 
 # main()
