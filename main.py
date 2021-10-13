@@ -5,5 +5,5 @@ app = FastAPI()
 
 @app.get('/fetch')
 async def index():
-    main()
+    await main()
     return 'All Data Fetched'
