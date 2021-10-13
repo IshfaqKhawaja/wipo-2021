@@ -3,7 +3,7 @@ from PR_EXE import main
 app = FastAPI()
 
 
-@app.get('/fetch')
+@app.get('/fetch/{num}')
 async def index():
-    await main()
+    await main(num)
     return 'All Data Fetched'
