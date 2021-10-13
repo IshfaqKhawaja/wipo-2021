@@ -28,8 +28,8 @@ driver = webdriver.Chrome(executable_path=os.environ.get(
 
 # options = Options()
 # options.headless = True
-driver = webdriver.Chrome(
-    ChromeDriverManager().install(), options=chrome_options)
+# driver = webdriver.Chrome(
+#     ChromeDriverManager().install(), options=chrome_options)
 #driver = webdriver.Chrome()
 notificationDat = "NA"
 address = "NA"
