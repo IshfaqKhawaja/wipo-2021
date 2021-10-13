@@ -126,7 +126,7 @@ def send_mail(pdf):
         print(e)
 
 
-async def main(num):
+def main(num):
     irnis = num
     try:
         driver.get("https://www3.wipo.int/madrid/monitor/en/")
